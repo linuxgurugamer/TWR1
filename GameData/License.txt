@@ -1,0 +1,3 @@
+The Vertical Velocity Control Mod is authored by Diazo.
+
+Released under the GPL3 license.

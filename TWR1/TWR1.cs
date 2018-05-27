@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,14 +8,21 @@ using System.Timers;
 using KSP.IO;
 using KSP.UI.Screens;
 
-
-
+using ClickThroughFix;
+using ToolbarControl_NS;
 
 namespace VerticalVelocity
 {
 
 
-
+    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
+    public class RegisterToolbar : MonoBehaviour
+    {
+        void Start()
+        {
+            ToolbarControl.RegisterMod(TWR1.MODID, TWR1.MODNAME);
+        }
+    }
 
     //Begin Vertical Velocity Control Mod by Diazo. (Originally Thrust to Weight Ratio 1 mod, hence the TWR1 references everywhere.)
     //Released under the GPL 3 license (http://www.gnu.org/licenses/gpl-3.0.html)
@@ -25,7 +32,8 @@ namespace VerticalVelocity
     public class TWR1 : MonoBehaviour
     {
         public static TWR1 thisModule;
-        ApplicationLauncherButton TWR1StockButton = null; //stock toolbar button instance
+        //ApplicationLauncherButton TWR1StockButton = null; //stock toolbar button instance
+        ToolbarControl toolbarControl;
         private bool buttonCreated = false;
         private bool TWR1KeyDown = false; //Is the TWR1 being held down at the moment?
         //private bool curVsl.TWR1Engaged = false; //Is TWR1 (Thrust Weight Ratio 1) mod engaged and auto-controlling?
@@ -75,7 +83,7 @@ namespace VerticalVelocity
         private Color TWR1ContentColor; //Default content color
         //private string TWR1HCTargetString; //Height Control target height in string format for GUI text entry
         //private bool TWR1HCOrbitDrop = false; //Are we orbit dropping?
-        private IButton TWR1Btn; //blizzy's toolbar button
+
         private bool TWR1Show = false; //show GUI?
         //private double TWR1HCThrustWarningTime = 0; //gametime saved for thrust warning check
         //private bool TWR1OrbitDropAllow = false; //are we high enough to offer Orbit Drop as an option?
@@ -289,25 +297,9 @@ namespace VerticalVelocity
 
                 TWR1WinPos = new Rect(TWR1WinPosWidth, TWR1WinPosHeight, 215, 180); //set window position
                 TWR1SettingsWin = new Rect(TWR1WinPosWidth + 218, TWR1WinPosHeight, 200, 180); //set settings window position to just next to main window
-                if (ToolbarManager.ToolbarAvailable) //check if toolbar available, load if it is
-                {
 
+                AddButtons();
 
-                    TWR1Btn = ToolbarManager.Instance.add("TWR1", "TWR1Btn");
-                    TWR1Btn.TexturePath = "Diazo/TWR1/icon_button";
-                    TWR1Btn.ToolTip = "Vertical Velocity Control";
-                    TWR1Btn.OnClick += (e) =>
-                    {
-                        onStockToolbarClick();
-                    };
-                }
-                else
-                {
-                    //AGXShow = true; //toolbar not installed, show AGX regardless
-                    //now using stock toolbar as fallback
-                    //TWR1StockButton = ApplicationLauncher.Instance.AddModApplication(onStockToolbarClick, onStockToolbarClick, DummyVoid, DummyVoid, DummyVoid, DummyVoid, ApplicationLauncher.AppScenes.FLIGHT, (Texture)GameDatabase.Instance.GetTexture("Diazo/TWR1/icon_button", false));
-                    StartCoroutine("AddButtons");
-                }
                 showLineTime = new System.Timers.Timer(3000);
                 //showLineTime.Interval = 3;
                 showLineTime.Elapsed += new ElapsedEventHandler(LineTimeOut);
@@ -316,9 +308,9 @@ namespace VerticalVelocity
 
                 theLine = lineObj.AddComponent<LineRenderer>();
                 theLine.material = new Material(Shader.Find("Particles/Additive"));
-                theLine.SetColors(Color.red, Color.red);
-                theLine.SetWidth(0, 0);
-                theLine.SetVertexCount(2);
+                SetColors(theLine, Color.red, Color.red);
+                SetWidth(theLine, 0, 0);
+                SetVertexCount(theLine, 2);
                 theLine.useWorldSpace = false;
                 GameEvents.onHideUI.Add(onHideMyUI);
                 GameEvents.onShowUI.Add(onShowMyUI);
@@ -343,20 +335,21 @@ namespace VerticalVelocity
             showMyUI = false;
         }
 
-        IEnumerator AddButtons()
+        internal const string MODID = "TWR1_NS";
+        internal const string MODNAME = "Vertical Velocity Controller";
+
+        void AddButtons()
         {
-            while (!ApplicationLauncher.Ready)
-            {
-                yield return null;
-            }
-            if (!buttonCreated)
-            {
-                TWR1StockButton = ApplicationLauncher.Instance.AddModApplication(onStockToolbarClick, onStockToolbarClick, DummyVoid, DummyVoid, DummyVoid, DummyVoid, ApplicationLauncher.AppScenes.FLIGHT, (Texture)GameDatabase.Instance.GetTexture("Diazo/TWR1/icon_button", false));
-                //GameEvents.onGUIApplicationLauncherReady.Remove(AddButtons);
-                //CLButton.onLeftClick(StockToolbarClick);
-                //CLButton.onRightClick = (Callback)Delegate.Combine(CLButton.onRightClick, rightClick); //combine delegates together
-                buttonCreated = true;
-            }
+            toolbarControl﻿ = gameObject.AddComponent<ToolbarControl>();
+            toolbarControl.AddToAllToolbars(onStockToolbarClick, onStockToolbarClick,
+                ApplicationLauncher.AppScenes.FLIGHT,
+                MODID,
+                "flightPlanButton",
+                "Diazo/TWR1/PluginData/Textures/icon_button",
+                "Diazo/TWR1/PluginData/Textures/icon_button",
+                MODNAME
+            );
+            buttonCreated = true;
         }
 
         public void LineTimeOut(System.Object source, ElapsedEventArgs e)
@@ -368,29 +361,19 @@ namespace VerticalVelocity
         {
             showLineTime.Start();
             timerRunning = true;
-            theLine.SetWidth(1, 0);
-
-
-
+            SetWidth(theLine, 1, 0);
         }
 
         public void HideLine()
         {
-            theLine.SetWidth(0, 0);
-
-        }
+            SetWidth(theLine, 0, 0);
+          }
 
         public void OnDisable()
         {
+            toolbarControl.OnDestroy();
+            Destroy(toolbarControl);
 
-            if (ToolbarManager.ToolbarAvailable) //if toolbar loaded, destroy button on leaving flight scene
-            {
-                TWR1Btn.Destroy();
-            }
-            else
-            {
-                ApplicationLauncher.Instance.RemoveModApplication(TWR1StockButton);
-            }
             TWR1Node.SetValue("TWR1WinX", TWR1WinPos.x.ToString()); //save window position
             TWR1Node.SetValue("TWR1WinY", TWR1WinPos.y.ToString());//same^
             TWR1Node.Save(KSPUtil.ApplicationRootPath + "GameData/Diazo/TWR1/TWR1.settings");//same^
@@ -404,7 +387,7 @@ namespace VerticalVelocity
         {
             if (TWR1Show && showMyUI) //show window?
             {
-                TWR1WinPos = GUI.Window(673467798, TWR1WinPos, OnWindow, "Vertical Velocity (Key:" + TWR1KeyCode.ToString() + ")", TWR1WinStyle);
+                TWR1WinPos = ClickThruBlocker.GUIWindow(673467798, TWR1WinPos, OnWindow, "Vertical Velocity (Key:" + TWR1KeyCode.ToString() + ")", TWR1WinStyle);
                 if(TWR1WinPos.Contains(Mouse.screenPos))
                 {
                     mouseOverWindow = true;
@@ -415,7 +398,7 @@ namespace VerticalVelocity
                 }
                 if (TWR1SettingsShow) //show settings window?
                 {
-                    TWR1SettingsWin = GUI.Window(673467799, TWR1SettingsWin, OnSettingsWindow, "Settings", TWR1WinStyle);
+                    TWR1SettingsWin = ClickThruBlocker.GUIWindow(673467799, TWR1SettingsWin, OnSettingsWindow, "Settings", TWR1WinStyle);
                 }
             }
             else
@@ -1126,7 +1109,23 @@ namespace VerticalVelocity
             }
         }
 
-        
+
+        internal static void SetColors(LineRenderer l, Color start, Color end)
+        {
+            l.startColor = start;
+            l.endColor = end;
+        }
+        internal static void SetWidth(LineRenderer l, float start, float end)
+        {
+            l.startWidth = start;
+            l.endWidth = end;
+        }
+
+        internal static void SetVertexCount(LineRenderer l, int cnt)
+        {
+            l.positionCount = cnt;
+        }
+
 
 
 

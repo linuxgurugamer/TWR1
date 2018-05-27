@@ -1,0 +1,30 @@
+{
+  "NAME": "VerticalVelocityController",
+  "URL": "https://raw.githubusercontent.com/linuxgurugamer/TWR1/master/TWR1.version",
+  "DOWNLOAD": "https://github.com/linuxgurugamer/TWR1/releases",
+  "GITHUB": {
+    "USERNAME": "linuxgurugamer",
+    "REPOSITORY": "TWR1"
+  },
+  "VERSION": {
+    "MAJOR": 1,
+    "MINOR": 33,
+    "PATCH": 0,
+    "BUILD": 0
+  },
+  "KSP_VERSION": {
+    "MAJOR": 1,
+    "MINOR": 4,
+    "PATCH": 1
+  },
+  "KSP_VERSION_MIN": {
+    "MAJOR": 1,
+    "MINOR": 4,
+    "PATCH": 1
+  },
+  "KSP_VERSION_MAX": {
+    "MAJOR": 1,
+    "MINOR": 4,
+    "PATCH": 99
+  }
+}

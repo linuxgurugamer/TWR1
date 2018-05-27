@@ -1,0 +1,6 @@
+1.33
+	Adoption by LGG
+	Added .version file
+	Added support for Toolbarcontroller
+	Added support for ClickThroughBlocker
+	Removed blizzy options

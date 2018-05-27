@@ -61,7 +61,7 @@ namespace VerticalVelocity
         //public Color TWR1ContentColor; //Default content color
         public string TWR1HCTargetString; //Height Control target height in string format for GUI text entry
         public bool TWR1HCOrbitDrop = false; //Are we orbit dropping?
-       // public IButton TWR1Btn; //blizzy's toolbar button
+
         //public bool TWR1Show = false; //show GUI?
         public double TWR1HCThrustWarningTime = 0; //gametime saved for thrust warning check
         public bool TWR1OrbitDropAllow = false; //are we high enough to offer Orbit Drop as an option?
