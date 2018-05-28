@@ -345,8 +345,8 @@ namespace VerticalVelocity
                 ApplicationLauncher.AppScenes.FLIGHT,
                 MODID,
                 "flightPlanButton",
-                "Diazo/TWR1/PluginData/Textures/icon_button",
-                "Diazo/TWR1/PluginData/Textures/icon_button",
+                "Diazo/TWR1/PluginData/Textures/icon_button-38",
+                "Diazo/TWR1/PluginData/Textures/icon_button-24",
                 MODNAME
             );
             buttonCreated = true;
