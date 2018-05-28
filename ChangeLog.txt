@@ -4,3 +4,4 @@
 	Added support for Toolbarcontroller
 	Added support for ClickThroughBlocker
 	Removed blizzy options
+	Updated icons with 38x38  versions
