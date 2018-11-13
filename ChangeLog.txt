@@ -1,3 +1,6 @@
+1.33.0.2
+	Updated .version file
+
 1.33.0.1
 	Added dependency checking
 	Rebuild for 1.5

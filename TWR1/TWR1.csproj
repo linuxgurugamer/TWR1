@@ -77,11 +77,17 @@ set textTemplatingPath="%25ProgramFiles(x86)%25\Microsoft Visual Studio\2017\Com
 </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
+    <PostBuildEvent>rem 
 start /D D:\Users\jbb\github\TWR1 /WAIT deploy.bat  $(TargetDir) $(TargetFileName)
 
+
+
 if $(ConfigurationName) == Release (
-	rem start /D D:\Users\jbb\github\TWR1 /WAIT buildRelease.bat $(TargetDir) $(TargetFileName)
+
+
+	start /D D:\Users\jbb\github\TWR1 /WAIT buildRelease.bat $(TargetDir) $(TargetFileName)
+
+
 )</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
