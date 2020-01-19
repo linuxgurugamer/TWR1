@@ -307,7 +307,7 @@ namespace VerticalVelocity
 
 
                 theLine = lineObj.AddComponent<LineRenderer>();
-                theLine.material = new Material(Shader.Find("Particles/Additive"));
+                theLine.material = new Material(Shader.Find("Legacy/Particles/Additive"));
                 SetColors(theLine, Color.red, Color.red);
                 SetWidth(theLine, 0, 0);
                 SetVertexCount(theLine, 2);

@@ -1,5 +1,8 @@
 ChagneLog
 
+1.34.0.1
+	Fixed shader to use Legacy shader
+
 1.34.0
 	Updated AssemblyVersion.tt
 	Added InstallChecker
